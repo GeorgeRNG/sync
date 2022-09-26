@@ -14,14 +14,29 @@
     </style>
     </head>
     <body>
-        <video src="badapple.mp4" controls="false"></video>
+        <input type="file" accept="video/*"/>
+        <video loop controls>
+            <source />
+            Browser does not support video
+        </video>
     </body>
     <script>
+        const fileinput = document.querySelector('input');
+        fileinput.oninput = () => {
+            const file = fileinput.files[0];
+            if(!/video\/.*/g.test(file.type)){ alert('File must be a video'); return; }
+            const video = document.querySelector('video');
+            const source = document.querySelector('source');
+            const link = URL.createObjectURL(file);
+            source.src = link;
+            console.log(video,link);
+            video.load();
+        }
+
         const playsevent = () => {
             videoelement.currentTime = ((Date.now() / 1000) % videoelement.duration);
             
         }
-
         const videoelement = document.querySelector('video');
         videoelement.onplay = playsevent;
         videoelement.onclick = playsevent;
