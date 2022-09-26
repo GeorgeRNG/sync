@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Video Sync</title>
+    <style>
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+        }
+    </style>
+    </head>
+    <body>
+        <video src="badapple.mp4" controls="false"></video>
+    </body>
+    <script>
+        const playsevent = () => {
+            videoelement.currentTime = ((Date.now() / 1000) % videoelement.duration);
+            
+        }
+
+        const videoelement = document.querySelector('video');
+        videoelement.onplay = playsevent;
+        videoelement.onclick = playsevent;
+    </script>
+</html>
