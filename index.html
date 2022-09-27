@@ -31,6 +31,8 @@
             <span id="timer">Sync timer should be here via javascript</span>
             <br />
             <progress id="timerbar" max="1000" value="0"></progress>
+            <br />
+            <button id="refresh">Sync up</button>
         </div>
         <video loop controls>
             <source />
@@ -61,6 +63,9 @@
         videoelement.onclick = playsevent;
         syncinput.onchange = playsevent;
 
+        const syncbutton = document.querySelector('button');
+        syncbutton.onclick = playsevent;
+        
         const synctimer = document.querySelector('span#timer');
         const syncbar = document.querySelector('progress');
         setInterval(() => {
