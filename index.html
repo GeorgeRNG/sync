@@ -10,18 +10,29 @@
             width: 100vw;
             height: 100vh;
             display: flex;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        }
+
+        input[type=number] {
+            width: 30%;
         }
     </style>
     </head>
     <body>
-        <input type="file" accept="video/*"/>
+        <div id="controls">
+            <input type="file" accept="video/*" id="file"/>
+            <br />
+            <label>Adjust Sync <input type="number" name="Offset" id="sync" /> (ms)</label>
+        </div>
         <video loop controls>
             <source />
             Browser does not support video
         </video>
     </body>
     <script>
-        const fileinput = document.querySelector('input');
+        "use strict";
+
+        const fileinput = document.querySelector('input#file');
         fileinput.oninput = () => {
             const file = fileinput.files[0];
             if(!/video\/.*/g.test(file.type)){ alert('File must be a video'); return; }
@@ -33,12 +44,13 @@
             video.load();
         }
 
+        const syncelement = document.querySelector('input#sync');
         const playsevent = () => {
-            videoelement.currentTime = ((Date.now() / 1000) % videoelement.duration);
-            
+            videoelement.currentTime = (((Date.now() + syncelement.valueAsNumber) / 1000) % videoelement.duration);
         }
         const videoelement = document.querySelector('video');
         videoelement.onplay = playsevent;
         videoelement.onclick = playsevent;
+        document.onkeydown = playsevent;
     </script>
 </html>
