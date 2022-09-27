@@ -16,6 +16,10 @@
         input[type=number] {
             width: 30%;
         }
+
+        progress {
+            width: 100%;
+        }
     </style>
     </head>
     <body>
@@ -23,6 +27,10 @@
             <input type="file" accept="video/*" id="file"/>
             <br />
             <label>Adjust Sync <input type="number" name="Offset" id="sync" /> (ms)</label>
+            <br />
+            <span id="timer">Sync timer should be here via javascript</span>
+            <br />
+            <progress id="timerbar" max="1000" value="0"></progress>
         </div>
         <video loop controls>
             <source />
@@ -44,13 +52,20 @@
             video.load();
         }
 
-        const syncelement = document.querySelector('input#sync');
+        const syncinput = document.querySelector('input#sync');
         const playsevent = () => {
-            videoelement.currentTime = (((Date.now() + syncelement.valueAsNumber) / 1000) % videoelement.duration);
+            videoelement.currentTime = (((Date.now() + syncinput.valueAsNumber) / 1000) % videoelement.duration);
         }
         const videoelement = document.querySelector('video');
         videoelement.onplay = playsevent;
         videoelement.onclick = playsevent;
-        document.onkeydown = playsevent;
+        syncinput.onchange = playsevent;
+
+        const synctimer = document.querySelector('span#timer');
+        const syncbar = document.querySelector('progress');
+        setInterval(() => {
+            synctimer.innerText = Date.now() + syncinput.valueAsNumber;
+            syncbar.value = (Date.now() + syncinput.valueAsNumber) % 1000
+        })
     </script>
 </html>
