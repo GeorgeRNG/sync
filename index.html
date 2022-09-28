@@ -10,7 +10,7 @@
             width: 100vw;
             height: 100vh;
             display: flex;
-            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            font-family: monospace;
         }
 
         input[type=number] {
@@ -30,7 +30,7 @@
             <br />
             <span id="timer">Sync timer should be here via javascript</span>
             <br />
-            <progress id="timerbar" max="1000" value="0"></progress>
+            <progress id="timerbar" max="5000" value="0"></progress>
             <br />
             <button id="refresh">Sync up</button>
         </div>
@@ -56,7 +56,7 @@
 
         const syncinput = document.querySelector('input#sync');
         const playsevent = () => {
-            videoelement.currentTime = (((Date.now() + syncinput.valueAsNumber) / 1000) % videoelement.duration);
+            videoelement.currentTime = (((time()) / 1000) % videoelement.duration);
         }
         const videoelement = document.querySelector('video');
         videoelement.onplay = playsevent;
@@ -69,8 +69,12 @@
         const synctimer = document.querySelector('span#timer');
         const syncbar = document.querySelector('progress');
         setInterval(() => {
-            synctimer.innerText = Date.now() + syncinput.valueAsNumber;
-            syncbar.value = (Date.now() + syncinput.valueAsNumber) % 1000
-        })
+            synctimer.innerText = `${time()} @ ${Math.round(time() % 10000 / 1000)}`;
+            syncbar.value = (time()) % 5000;
+        });
+
+        function time(){
+            return Date.now() + syncinput.valueAsNumber;
+        }
     </script>
 </html>
