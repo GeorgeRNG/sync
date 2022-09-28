@@ -26,7 +26,7 @@
         <div id="controls">
             <input type="file" accept="video/*" id="file"/>
             <br />
-            <label>Adjust Sync <input type="number" name="Offset" id="sync" /> (ms)</label>
+            <label>Adjust Sync <input type="number" name="Offset" id="sync" value="0"/> (ms)</label>
             <br />
             <span id="timer">Sync timer should be here via javascript</span>
             <br />
@@ -41,8 +41,17 @@
     </body>
     <script>
         "use strict";
-
+        
+        const videoelement = document.querySelector('video');
         const fileinput = document.querySelector('input#file');
+        const syncinput = document.querySelector('input#sync');
+        const syncbutton = document.querySelector('button');
+        const synctimer = document.querySelector('span#timer');
+        const syncbar = document.querySelector('progress');
+        
+        let seeking = false;
+        let ticking = false;
+        
         fileinput.oninput = () => {
             const file = fileinput.files[0];
             if(!/video\/.*/g.test(file.type)){ alert('File must be a video'); return; }
@@ -54,24 +63,41 @@
             video.load();
         }
 
-        const syncinput = document.querySelector('input#sync');
-        const playsevent = () => {
-            videoelement.currentTime = (((time()) / 1000) % videoelement.duration);
-        }
-        const videoelement = document.querySelector('video');
-        videoelement.onplay = playsevent;
-        videoelement.onclick = playsevent;
         syncinput.onchange = playsevent;
 
-        const syncbutton = document.querySelector('button');
+
+        videoelement.addEventListener('seeking', function() {
+            seeking = true;
+        });
+
+        videoelement.addEventListener('seeked', function() {
+            seeking = false;
+        });
+
+        videoelement.onplay = playsevent;
+        videoelement.onclick = playsevent;
+        videoelement.onended = playsevent;
+        videoelement.onchange = playsevent;
+        videoelement.oncuechange = playsevent;
+
         syncbutton.onclick = playsevent;
         
-        const synctimer = document.querySelector('span#timer');
-        const syncbar = document.querySelector('progress');
         setInterval(() => {
             synctimer.innerText = `${time()} @ ${Math.round(time() % 10000 / 1000)}`;
             syncbar.value = (time()) % 5000;
         });
+
+
+        function playsevent() {
+            if(!ticking) {
+                window.requestAnimationFrame(() => {
+                    if(!seeking) videoelement.currentTime = (((time()) / 1000) % videoelement.duration);
+                    ticking = false;
+                });
+
+                ticking = true;
+            }
+        }
 
         function time(){
             return Date.now() + syncinput.valueAsNumber;
